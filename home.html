@@ -267,6 +267,50 @@
         .modal {
             display: none;
             position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 800px;
+            max-height: 80%;
+            overflow: auto;
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: black;
+        }
+
+        #pdfControls button {
+            margin: 0 10px;
+            padding: 5px 10px;
+        }
+
+        #pdfCanvas {
+            display: block;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+        }
+        .modal {
+            display: none;
+            position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             background: rgba(15, 23, 42, 0.95);
@@ -296,6 +340,7 @@
 
         iframe { width: 100%; height: 100%; border: none; }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
 
@@ -408,25 +453,89 @@
 <div id="pdfModal" class="modal">
     <span class="close-btn" onclick="closePDF()">&times;</span>
     <div class="modal-content">
-        <div id="pdfFrameHolder" style="height: 100%;"></div>
+        <div id="pdfControls" style="text-align: center; margin-bottom: 10px;">
+            <button id="prevPage" onclick="onPrevPage()">Previous</button>
+            <span id="pageNum"></span> / <span id="pageCount"></span>
+            <button id="nextPage" onclick="onNextPage()">Next</button>
+        </div>
+        <canvas id="pdfCanvas"></canvas>
     </div>
 </div>
 
 <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    let pdfDoc = null;
+    let pageNum = 1;
+    let pageRendering = false;
+    let pageNumPending = null;
+    const scale = 1.5;
+    const canvas = document.getElementById('pdfCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function renderPage(num) {
+        pageRendering = true;
+        pdfDoc.getPage(num).then(function(page) {
+            const viewport = page.getViewport({scale: scale});
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            const renderContext = {
+                canvasContext: ctx,
+                viewport: viewport
+            };
+            const renderTask = page.render(renderContext);
+
+            renderTask.promise.then(function() {
+                pageRendering = false;
+                if (pageNumPending !== null) {
+                    renderPage(pageNumPending);
+                    pageNumPending = null;
+                }
+            });
+        });
+        document.getElementById('pageNum').textContent = num;
+    }
+
+    function queueRenderPage(num) {
+        if (pageRendering) {
+            pageNumPending = num;
+        } else {
+            renderPage(num);
+        }
+    }
+
+    function onPrevPage() {
+        if (pageNum <= 1) return;
+        pageNum--;
+        queueRenderPage(pageNum);
+    }
+
+    function onNextPage() {
+        if (pageNum >= pdfDoc.numPages) return;
+        pageNum++;
+        queueRenderPage(pageNum);
+    }
+
     function openPDF(filePath) {
         const modal = document.getElementById('pdfModal');
-        const holder = document.getElementById('pdfFrameHolder');
-        holder.innerHTML = `<iframe src="${encodeURI(filePath)}"></iframe>`;
         modal.style.display = 'block';
-        document.body.style.overflow = 'hidden'; 
+        document.body.style.overflow = 'hidden';
+
+        pdfjsLib.getDocument(filePath).promise.then(function(pdf) {
+            pdfDoc = pdf;
+            document.getElementById('pageCount').textContent = pdf.numPages;
+            pageNum = 1;
+            renderPage(pageNum);
+        });
     }
 
     function closePDF() {
         const modal = document.getElementById('pdfModal');
-        const holder = document.getElementById('pdfFrameHolder');
         modal.style.display = 'none';
-        holder.innerHTML = ''; 
         document.body.style.overflow = 'auto';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pdfDoc = null;
     }
 
     window.onclick = function(event) {
