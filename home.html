@@ -268,7 +268,7 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(15, 23, 42, 0.95);
+            background: rgba(15, 23, 42, 0.96);
             z-index: 2000;
             backdrop-filter: blur(5px);
             overflow: hidden;
@@ -280,88 +280,39 @@
             height: 100%;
             margin: 0;
             padding: 0;
-            background: white;
-            border-radius: 0;
+            background: #000;
             overflow: hidden;
         }
 
         .close-btn {
             position: absolute;
-            top: 12px;
-            right: 18px;
-            color: #ffffff;
-            font-size: 38px;
-            cursor: pointer;
-            z-index: 2001;
-            text-shadow: 0 0 12px rgba(0,0,0,0.35);
-        }
-
-        .close-btn:hover {
-            color: #f8fafc;
-        }
-
-        #pdfControls {
-            position: absolute;
-            top: 12px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.92);
-            padding: 8px 12px;
-            border-radius: 999px;
-            z-index: 2001;
-            backdrop-filter: blur(10px);
-        }
-
-        #pdfControls button {
-            margin: 0;
-            padding: 8px 12px;
+            top: 16px;
+            right: 16px;
+            width: 38px;
+            height: 38px;
             border: none;
-            background: var(--primary);
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
             color: #fff;
-            border-radius: 999px;
-            font-weight: 600;
+            font-size: 24px;
+            line-height: 38px;
+            text-align: center;
             cursor: pointer;
+            z-index: 2001;
             transition: background 0.2s ease;
         }
 
-        #pdfControls button:hover {
-            background: var(--primary-dark);
-        }
-
-        #zoomLevel {
-            min-width: 44px;
-            text-align: center;
-            font-weight: 700;
-            color: var(--dark);
+        .close-btn:hover {
+            background: rgba(255,255,255,0.35);
         }
 
         #pdfCanvas {
             display: block;
             width: 100%;
-            height: auto;
+            height: 100%;
+            object-fit: contain;
             border: none;
-        }
-
-        @media (max-width: 768px) {
-            .close-btn {
-                top: 8px;
-                right: 10px;
-                font-size: 34px;
-            }
-
-            #pdfControls {
-                top: 8px;
-                padding: 6px 10px;
-                gap: 8px;
-            }
-
-            #pdfControls button {
-                padding: 7px 10px;
-                font-size: 0.9rem;
-            }
+            background: #000;
         }
 
         iframe { width: 100%; height: 100%; border: none; }
@@ -477,16 +428,8 @@
 </footer>
 
 <div id="pdfModal" class="modal">
-    <span class="close-btn" onclick="closePDF()">&times;</span>
     <div class="modal-content">
-        <div id="pdfControls" style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.92); padding: 8px 12px; border-radius: 999px; display: flex; align-items: center; gap: 8px; z-index: 1001;">
-            <button id="prevPage" onclick="onPrevPage()">Previous</button>
-            <span id="pageNum"></span> / <span id="pageCount"></span>
-            <button id="nextPage" onclick="onNextPage()">Next</button>
-            <button id="zoomOut" onclick="zoomOut()">-</button>
-            <span id="zoomLevel">100%</span>
-            <button id="zoomIn" onclick="zoomIn()">+</button>
-        </div>
+        <button class="close-btn" onclick="closePDF()" aria-label="Close PDF viewer">×</button>
         <canvas id="pdfCanvas"></canvas>
     </div>
 </div>
@@ -505,13 +448,22 @@
     const canvas = document.getElementById('pdfCanvas');
     const ctx = canvas.getContext('2d');
 
+    canvas.addEventListener('click', function(event) {
+        if (pdfDoc && event.target === canvas) {
+            if (pageNum < pdfDoc.numPages) {
+                pageNum++;
+                queueRenderPage(pageNum);
+            }
+        }
+    });
+
     function renderPage(num) {
         pageRendering = true;
         pdfDoc.getPage(num).then(function(page) {
             const container = document.querySelector('.modal-content');
             const viewportUnscaled = page.getViewport({scale: 1});
             const availableWidth = container.clientWidth;
-            const availableHeight = Math.max(container.clientHeight - 84, 100);
+            const availableHeight = container.clientHeight;
             const widthScale = availableWidth / viewportUnscaled.width;
             const heightScale = availableHeight / viewportUnscaled.height;
             const fitScale = Math.min(widthScale, heightScale);
@@ -539,7 +491,10 @@
                 }
             });
         });
-        document.getElementById('pageNum').textContent = num;
+        const pageNumEl = document.getElementById('pageNum');
+        if (pageNumEl) {
+            pageNumEl.textContent = num;
+        }
     }
 
     function queueRenderPage(num) {
@@ -551,7 +506,10 @@
     }
 
     function updateZoomLevel() {
-        document.getElementById('zoomLevel').textContent = Math.round(zoomLevel * 100) + '%';
+        const zoomLevelEl = document.getElementById('zoomLevel');
+        if (zoomLevelEl) {
+            zoomLevelEl.textContent = Math.round(zoomLevel * 100) + '%';
+        }
     }
 
     function zoomIn() {
@@ -587,7 +545,10 @@
 
         pdfjsLib.getDocument(filePath).promise.then(function(pdf) {
             pdfDoc = pdf;
-            document.getElementById('pageCount').textContent = pdf.numPages;
+            const pageCountEl = document.getElementById('pageCount');
+            if (pageCountEl) {
+                pageCountEl.textContent = pdf.numPages;
+            }
             pageNum = 1;
             renderPage(pageNum);
         });
@@ -600,12 +561,6 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         pdfDoc = null;
     }
-
-    window.addEventListener('resize', function() {
-        if (pdfDoc) {
-            queueRenderPage(pageNum);
-        }
-    });
 
     window.onclick = function(event) {
         if (event.target == document.getElementById('pdfModal')) closePDF();
