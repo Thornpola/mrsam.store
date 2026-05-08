@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAMLEY WEB - Library</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --bg: #f8f9fa;
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        header {
+            background: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Grid Layout */
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 30px;
+        }
+
+        .book-card {
+            background: white;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .book-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .cover-placeholder {
+            width: 100%;
+            aspect-ratio: 3/4;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            border-radius: 2px;
+            font-weight: bold;
+            color: #adb5bd;
+            font-size: 0.9rem;
+            border: 1px solid #dee2e6;
+        }
+
+        .book-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .book-category {
+            font-size: 0.8rem;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+
+        /* Modal Previewer */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 900px;
+            height: 90vh;
+            margin: 2vh auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            color: white;
+            font-size: 35px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>SAMLEY WEB LIBRARY</h1>
+</header>
+
+<div class="container">
+    <div class="book-grid">
+        
+        <div class="book-card" onclick="openPDF('pdf/04_Factorial.pdf')">
+            <div class="cover-placeholder" style="border-top: 5px solid #e74c3c;">PDF</div>
+            <span class="book-title">04 Factorial</span>
+            <span class="book-category">Mathematics</span>
+        </div>
+
+        <div class="book-card" onclick="openPDF('pdf/Exp_CRD.pdf')">
+            <div class="cover-placeholder" style="border-top: 5px solid #2ecc71;">PDF</div>
+            <span class="book-title">Exp CRD</span>
+            <span class="book-category">Statistics</span>
+        </div>
+
+        <div class="book-card" onclick="openPDF('pdf/factorial.pdf')">
+            <div class="cover-placeholder" style="border-top: 5px solid #f1c40f;">PDF</div>
+            <span class="book-title">Factorial Notes</span>
+            <span class="book-category">Reference</span>
+        </div>
+
+        <div class="book-card" onclick="openPDF('pdf/RCBD1.pdf')">
+            <div class="cover-placeholder" style="border-top: 5px solid #3498db;">PDF</div>
+            <span class="book-title">RCBD 1</span>
+            <span class="book-category">Design</span>
+        </div>
+
+        <div class="book-card" onclick="openPDF('pdf/SPSS_T_samley.1.pdf')">
+            <div class="cover-placeholder" style="border-top: 5px solid #9b59b6;">PDF</div>
+            <span class="book-title">SPSS T Samley</span>
+            <span class="book-category">SPSS Guide</span>
+        </div>
+
+        <div class="book-card" onclick="openPDF('pdf/ការណែនាំអំពីកម្មវិធី_SPSS.pdf')">
+            <div class="cover-placeholder" style="border-top: 5px solid #e67e22;">PDF</div>
+            <span class="book-title">ការណែនាំ SPSS</span>
+            <span class="book-category">Tutorial</span>
+        </div>
+
+    </div>
+</div>
+
+<div id="pdfModal" class="modal">
+    <span class="close-btn" onclick="closePDF()">&times;</span>
+    <div class="modal-content">
+        <div id="pdfFrameHolder" style="height: 100%;"></div>
+    </div>
+</div>
+
+<script>
+    function openPDF(filePath) {
+        const modal = document.getElementById('pdfModal');
+        const holder = document.getElementById('pdfFrameHolder');
+        
+        // Use encodeURI for files with Khmer characters
+        const safePath = encodeURI(filePath);
+        
+        holder.innerHTML = `<iframe src="${safePath}"></iframe>`;
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden'; // Stop scrolling
+    }
+
+    function closePDF() {
+        const modal = document.getElementById('pdfModal');
+        const holder = document.getElementById('pdfFrameHolder');
+        
+        modal.style.display = 'none';
+        holder.innerHTML = ''; // Clear iframe to stop loading
+        document.body.style.overflow = 'auto';
+    }
+
+    // Close when clicking outside the box
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('pdfModal')) {
+            closePDF();
+        }
+    }
+</script>
+
+</body>
+</html>

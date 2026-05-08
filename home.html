@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pola Entertainment - Library & Faculty</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #64748b;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color:pink;
+            margin: 0;
+            padding: 0;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            background: var(--white);
+            padding: 1rem 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links a {
+            margin-left: 25px;
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* --- Header --- */
+        header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--white);
+            padding: 80px 20px;
+            text-align: center;
+            clip-path: ellipse(150% 100% at 50% 0%);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 10px auto 0;
+            font-weight: 300;
+        }
+
+        /* --- Main Content --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+            margin-top: 20px;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-header h2::after {
+            content: '';
+            width: 60%;
+            height: 4px;
+            background: var(--primary);
+            position: absolute;
+            bottom: -8px;
+            left: 20%;
+            border-radius: 2px;
+        }
+
+        /* --- 1. Digital Library Section --- */
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 30px;
+            margin-bottom: 80px;
+        }
+
+        .book-card {
+            background: var(--white);
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid transparent;
+        }
+
+        .book-card:hover {
+            box-shadow: var(--shadow);
+            border-color: var(--primary);
+            transform: scale(1.03);
+        }
+
+        .book-cover {
+            width: 100%;
+            aspect-ratio: 3/4;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background-color: #f1f5f9;
+            display: block;
+        }
+
+        .book-title {
+            font-size: 1rem;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .book-category {
+            font-size: 0.75rem;
+            color: var(--primary);
+            background: #eff6ff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        /* --- 2. Teacher Profiles Section --- */
+        .teacher-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .teacher-card {
+            background: var(--white);
+            border-radius: 16px;
+            text-align: center;
+            padding: 40px 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .teacher-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .teacher-img-wrapper {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            padding: 5px;
+            border: 2px solid var(--primary);
+            background: var(--white);
+            overflow: hidden;
+        }
+
+        .teacher-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e2e8f0;
+        }
+
+        .teacher-card h3 {
+            margin: 10px 0 5px;
+            font-size: 1.25rem;
+        }
+
+        .teacher-card p {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .teacher-card small {
+            color: var(--secondary);
+            font-size: 0.85rem;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: var(--dark);
+            color: #94a3b8;
+            padding: 60px 20px 30px;
+            margin-top: 80px;
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-col h4 {
+            color: var(--white);
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.85rem;
+        }
+
+        /* --- PDF Modal --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 1100px;
+            height: 85vh;
+            margin: 5vh auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px; right: 25px;
+            color: var(--white);
+            font-size: 45px;
+            cursor: pointer;
+            z-index: 2001;
+        }
+
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="#" class="logo">Pola Enterainment</a>
+    <div class="nav-links">
+        <a href="#library">Library</a>
+        <a href="#teachers">Faculty</a>
+        <a href="#contact">Contact</a>
+    </div>
+</nav>
+
+<header>
+    <h1>EXPERIMENTAL METHODOLOGY</h1>
+    <p><font face="Khmer OS System">សូមស្វាគមន៍មកកាន់ថ្នាក់រៀន លោកគ្រូ ម៉ម សំឡី</font></p>
+</header>
+
+<div class="container">
+    
+    <div class="section-header" id="library">
+        <h2><font face="Khmer OS System">សូមជ្រើសរើស​សៀវភៅសិក្សា</font></h2>
+    </div>
+    
+    <div class="book-grid">
+        <div class="book-card" onclick="openPDF('pdf/04_Factorial.pdf')">
+            <img src="./images/22.png" alt="04 Factorial" class="book-cover" onerror="this.src='https://via.placeholder.com/300x400?text=Mathematics'">
+            <span class="book-title"><font face="Khmer OS System">04 ការរៀបចំបច្ច័យពិសោធន៍</font></span>
+            <span class="book-category"><font face="Khmer OS System">3Fator, 2level ក្នុង CRD</font></span>
+        </div>
+
+        <div class="book-card" onclick="openPDF('pdf/Exp_CRD.pdf')">
+            <img src="./images/33.png" alt="Exp CRD" class="book-cover" onerror="this.src='https://via.placeholder.com/300x400?text=Statistics'">
+            <span class="book-title"><font face="Khmer OS System">ការរៀបចំផែការដោយចៃដន្យ</font></span>
+            <span class="book-category">Completely Randomized Design,CRD</span>
+        </div>
+
+        <div class="book-card" onclick="openPDF('pdf/factorial.pdf')">
+            <img src="./images/44.png" alt="Factorial Notes" class="book-cover" onerror="this.src='https://via.placeholder.com/300x400?text=Reference'">
+            <span class="book-title"><font face="Khmer OS System">ការគ្រប់គ្រងការពិសោធន៏</font></span>
+            <span class="book-category"> Factorial</span>
+        </div>
+
+        <div class="book-card" onclick="openPDF('pdf/RCBD1.pdf')">
+            <img src="./images/33.png" alt="RCBD 1" class="book-cover" onerror="this.src='https://via.placeholder.com/300x400?text=Design'">
+            <span class="book-title"><font face="Khmer OS System">RCBD</font></span>
+            <span class="book-category"><font face="Khmer OS System">(RBC, RCBD, RBD)</font></span>
+        </div>
+
+        <div class="book-card" onclick="openPDF('pdf/SPSS_T_samley.1.pdf')">
+            <img src="./images/11.png" alt="SPSS Guide" class="book-cover" onerror="this.src='https://via.placeholder.com/300x400?text=SPSS+Guide'">
+            <span class="book-title"><font face="Khmer OS System">ការវិភាគលទ្ធផលពិសោធន៍</font></span>
+            <span class="book-category">SPSS</span>
+        </div>
+
+        <div class="book-card" onclick="openPDF('pdf/ការណែនាំអំពីកម្មវិធី_SPSS.pdf')">
+            <img src="./images/Jpg.jpg" alt="SPSS Khmer" class="book-cover" onerror="this.src='https://via.placeholder.com/300x400?text=SPSS+Tutorial'">
+            <span class="book-title"><font face="Khmer OS System">ការណែនាំ SPSS</font></span>
+            <span class="book-category"><font face="Khmer OS System">SPSS</font></span>
+        </div>
+    </div>
+
+    <hr style="opacity: 0.1; margin: 60px 0;">
+
+    <div class="section-header" id="teachers">
+        <h2>Faculty & Staff</h2>
+    </div>
+    
+    <div class="teacher-grid">
+    <div class="teacher-card">
+        <div class="teacher-img-wrapper">
+            <img src="admin/teacher.jpg" alt="Prof. Samley">
+        </div>
+        <h3>Prof. Samley</h3>
+        <p>Professor of Statistics</p>
+        <small></small>
+    </div>
+
+    <div class="teacher-card">
+        <div class="teacher-img-wrapper">
+            <img src="admin/support.jpg" alt="Mr. Pola">
+        </div>
+        <h3>Mr. Pola</h3>
+        <p>Full Stack Developer</p>
+        <small></small>
+    </div>
+</div>
+
+</div>
+
+<footer id="contact">
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h4>Pola Enterainment</h4>
+            <p>Empowering students through accessible digital documentation and expert guidance.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Quick Links</h4>
+            <p>• Help Center<br>• Library Archive<br>• Faculty Profiles</p>
+        </div>
+        <div class="footer-col">
+            <h4>Contact Info</h4>
+            <p>Email: thornpola6@gmail.com<br>Location: Kampong Speu institute of Technology</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2026 SAMLEY WEB LIBRARY. All rights reserved.
+    </div>
+</footer>
+
+<div id="pdfModal" class="modal">
+    <span class="close-btn" onclick="closePDF()">&times;</span>
+    <div class="modal-content">
+        <div id="pdfFrameHolder" style="height: 100%;"></div>
+    </div>
+</div>
+
+<script>
+    function openPDF(filePath) {
+        const modal = document.getElementById('pdfModal');
+        const holder = document.getElementById('pdfFrameHolder');
+        holder.innerHTML = `<iframe src="${encodeURI(filePath)}"></iframe>`;
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden'; 
+    }
+
+    function closePDF() {
+        const modal = document.getElementById('pdfModal');
+        const holder = document.getElementById('pdfFrameHolder');
+        modal.style.display = 'none';
+        holder.innerHTML = ''; 
+        document.body.style.overflow = 'auto';
+    }
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('pdfModal')) closePDF();
+    }
+</script>
+
+</body>
+</html>
