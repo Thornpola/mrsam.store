@@ -277,21 +277,23 @@
 
         .modal-content {
             background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 800px;
-            max-height: 80%;
-            overflow: auto;
+            margin: 0;
+            padding: 0;
+            border: none;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
         }
 
         .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
             color: #aaa;
-            float: right;
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
+            z-index: 1001;
         }
 
         .close-btn:hover {
@@ -305,8 +307,9 @@
 
         #pdfCanvas {
             display: block;
-            margin: 0 auto;
-            border: 1px solid #ccc;
+            width: 100%;
+            height: 100%;
+            border: none;
         }
         .modal {
             display: none;
@@ -453,7 +456,7 @@
 <div id="pdfModal" class="modal">
     <span class="close-btn" onclick="closePDF()">&times;</span>
     <div class="modal-content">
-        <div id="pdfControls" style="text-align: center; margin-bottom: 10px;">
+        <div id="pdfControls" style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.8); padding: 5px; border-radius: 5px; z-index: 1001;">
             <button id="prevPage" onclick="onPrevPage()">Previous</button>
             <span id="pageNum"></span> / <span id="pageCount"></span>
             <button id="nextPage" onclick="onNextPage()">Next</button>
